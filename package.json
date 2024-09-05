@@ -1,7 +1,7 @@
 {
   "name": "@kne/react-flow-chart",
   "version": "0.1.0",
-  "description": "用于展示或编辑一个审批流",
+  "description": "用于展示或编辑一个审批流.",
   "syntax": {
     "esmodules": true
   },
