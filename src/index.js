@@ -137,7 +137,7 @@ const FlowChart = ({ className, ...props }) => {
       window.removeEventListener('mousemove', mouseMoveHandler, false);
       window.removeEventListener('mouseup', mouseUpHandler, false);
     };
-  }, [emitter, enableDrag]);
+  }, [emitter, enableDrag, setNodeList]);
 
   return (
     <Provider
