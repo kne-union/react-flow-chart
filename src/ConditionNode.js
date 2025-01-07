@@ -39,7 +39,8 @@ const ConditionNode = props => {
                     {!readonly && (
                       <div
                         className={style['condition-content-title-add-btn']}
-                        onClick={() => {
+                        onClick={e => {
+                          e.stopPropagation();
                           emitter.emit('add-condition-branch-click', { nodeData });
                         }}
                       >
