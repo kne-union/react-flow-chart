@@ -1,0 +1,10 @@
+<svg
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+    <path
+            d="M896 480H544.8V128h-65.6v352H128v66.4h351.2V896h65.6V546.4H896z"
+    ></path>
+</svg>
