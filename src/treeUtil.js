@@ -72,18 +72,15 @@ export const removeNode = (tree, { currentNodeId }) => {
 export const replaceNode = (tree, { node }) => {
   const core = tree => {
     if (Array.isArray(tree)) {
-      for (let node of tree) {
-        const res = core(node);
-        if (res) {
-          return res;
-        }
-      }
+      return tree.map(node => {
+        return core(node);
+      });
     }
     if (tree.id === node.id) {
       return Object.assign({}, node, { type: tree.type });
     }
 
-    return tree.children ? core(tree.children) : null;
+    return tree.children ? Object.assign(tree, { children: core(tree.children) }) : tree;
   };
   return core(tree);
 };

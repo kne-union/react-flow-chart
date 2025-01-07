@@ -13,7 +13,7 @@ const NodeContent = props => {
         emitter.emit('node-content-click', { nodeData });
       }}
     >
-      <div className={style['normal-node-title']}>{nodeData.title || ''}</div>
+      <div className={style['normal-node-title']}>{(typeof nodeData.titleRender === 'function' ? nodeData.titleRender(nodeData) : nodeData.title) || ''}</div>
       <div className={style['normal-node-data']}>
         <div className={style['normal-node-data-text']}>{nodeData.content || ''}</div>
         <img src={arrow} alt="箭头" className={style['normal-node-data-icon']} />
