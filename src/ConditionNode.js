@@ -5,6 +5,7 @@ import { useContext } from './context';
 import AddNode from './AddNode';
 import ArrowLine from './ArrowLine';
 import Node from './Node';
+import NodeContent from './NodeContent';
 
 const ConditionNode = props => {
   const { nodeData, isMouseEnter } = Object.assign({}, { nodeList: null, data: null, isMouseEnter: false }, props);
@@ -17,15 +18,41 @@ const ConditionNode = props => {
         [style['vertical']]: vertical
       })}
     >
-      {!readonly && (
+      {!readonly && !nodeData.content && (
         <div
-          className={style['condition-add-btn']}
+          className={classnames(style['condition-add-btn'])}
           onClick={() => {
             emitter.emit('add-condition-branch-click', { nodeData });
           }}
         >
           添加条件
         </div>
+      )}
+      {nodeData.content && (
+        <>
+          <NodeContent
+            nodeData={Object.assign({}, nodeData, {
+              title: (
+                <div className={style['condition-content-title']}>
+                  <div>{nodeData.title}</div>
+                  <div>
+                    {!readonly && (
+                      <div
+                        className={style['condition-content-title-add-btn']}
+                        onClick={() => {
+                          emitter.emit('add-condition-branch-click', { nodeData });
+                        }}
+                      >
+                        添加条件
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          />
+          <ArrowLine />
+        </>
       )}
       <div className={style['condition-node-item-list']}>
         {nodeData.children.map((node, index) => {
