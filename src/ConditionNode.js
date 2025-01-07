@@ -32,7 +32,7 @@ const ConditionNode = props => {
         <>
           <NodeContent
             nodeData={Object.assign({}, nodeData, {
-              title: (
+              titleRender: nodeData => (
                 <div className={style['condition-content-title']}>
                   <div>{nodeData.title}</div>
                   <div>
