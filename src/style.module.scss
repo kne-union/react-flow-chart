@@ -576,3 +576,21 @@
   text-align: center;
   background: #2c2c2c;
 }
+
+.condition-content-title {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.condition-content-title-add-btn {
+  font-weight: normal;
+  border: 1px solid #dedede;
+  background: #fff;
+  border-radius: 18px;
+  color: #222;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 10px;
+  text-align: center;
+}

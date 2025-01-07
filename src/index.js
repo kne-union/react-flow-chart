@@ -11,7 +11,17 @@ import { v4 as uuidv4 } from 'uuid';
 import useControlValue from '@kne/use-control-value';
 
 const FlowChart = ({ className, ...props }) => {
-  const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, ...otherProps } = Object.assign({}, { showScrollBar: true, enableDrag: true, initFit: true, vertical: false }, props);
+  const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, nodeTemplate, ...otherProps } = Object.assign(
+    {},
+    {
+      showScrollBar: true,
+      enableDrag: true,
+      initFit: true,
+      vertical: false,
+      nodeTemplate: {}
+    },
+    props
+  );
   const [nodeListState, setNodeList] = useControlValue(otherProps);
   const nodeList = Array.isArray(nodeListState) && nodeListState.length > 0 ? nodeListState : defaultNodeList;
   const [scale, setScale] = useState(100);
@@ -22,6 +32,8 @@ const FlowChart = ({ className, ...props }) => {
   nodeListRef.current = nodeList;
   const onEditNodeRef = useRef(null);
   onEditNodeRef.current = onEditNode;
+  const nodeTemplateRef = useRef(null);
+  nodeTemplateRef.current = nodeTemplate;
 
   const emitter = useEvent({ name: 'flow-chart' });
 
@@ -54,29 +66,47 @@ const FlowChart = ({ className, ...props }) => {
         return setNodeList(
           appendNode(nodeListRef.current, {
             currentNodeId: nodeData.id,
-            node: {
-              id: uuidv4(),
-              type: 'condition',
-              title: '条件分支',
-              children: [
-                [
-                  {
-                    id: uuidv4(),
-                    type: 'branch',
-                    title: '条件',
-                    content: '条件内容'
-                  }
-                ],
-                [
-                  {
-                    id: uuidv4(),
-                    type: 'branch',
-                    title: '条件',
-                    content: '条件内容'
-                  }
+            node: Object.assign(
+              {},
+              {
+                title: '条件分支'
+              },
+              nodeTemplateRef.current?.['condition'],
+              {
+                id: uuidv4(),
+                type: 'condition',
+                children: [
+                  [
+                    Object.assign(
+                      {},
+                      {
+                        title: '条件',
+                        content: '条件内容'
+                      },
+                      nodeTemplateRef.current?.['branch'],
+                      {
+                        id: uuidv4(),
+                        type: 'branch'
+                      }
+                    )
+                  ],
+                  [
+                    Object.assign(
+                      {},
+                      {
+                        title: '条件',
+                        content: '条件内容'
+                      },
+                      nodeTemplateRef.current?.['branch'],
+                      {
+                        id: uuidv4(),
+                        type: 'branch'
+                      }
+                    )
+                  ]
                 ]
-              ]
-            }
+              }
+            )
           })
         );
       }
@@ -84,12 +114,18 @@ const FlowChart = ({ className, ...props }) => {
         return setNodeList(
           appendNode(nodeListRef.current, {
             currentNodeId: nodeData.id,
-            node: {
-              id: uuidv4(),
-              type: 'normal',
-              title: '普通节点',
-              content: '节点内容'
-            }
+            node: Object.assign(
+              {},
+              {
+                title: '普通节点',
+                content: '节点内容'
+              },
+              nodeTemplateRef.current?.['normal'],
+              {
+                id: uuidv4(),
+                type: 'normal'
+              }
+            )
           })
         );
       }
