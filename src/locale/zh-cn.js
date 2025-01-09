@@ -1,5 +1,3 @@
-import loader from './loader';
-
 const locale = {
   start: '开始',
   end: '结束',
@@ -10,7 +8,5 @@ const locale = {
   conditionContent: '条件内容',
   nodeContent: '节点内容'
 };
-
-loader('zh-cn', locale);
 
 export default locale;

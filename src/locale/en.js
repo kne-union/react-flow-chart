@@ -1,5 +1,3 @@
-import loader from './loader';
-
 const locale = {
   start: 'Start',
   end: 'End',
@@ -10,7 +8,5 @@ const locale = {
   conditionContent: 'Condition Content',
   nodeContent: 'Node Content'
 };
-
-loader('en', locale);
 
 export default locale;

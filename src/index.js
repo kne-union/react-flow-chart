@@ -10,8 +10,11 @@ import { appendNode, removeNode, replaceNode } from './treeUtil';
 import { v4 as uuidv4 } from 'uuid';
 import useControlValue from '@kne/use-control-value';
 import { IntlProvider, useIntl } from 'react-intl';
-import './locale/zh-cn';
-import { message } from './locale/loader';
+import localeLoader from './loader';
+import zhCn from './locale/zh-cn';
+import { message } from './loader';
+
+localeLoader('zh-cn', zhCn);
 
 const FlowChart = ({ className, ...props }) => {
   const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, nodeTemplate, ...otherProps } = Object.assign(
@@ -232,5 +235,5 @@ const FlowChartIntl = ({ locale = 'zh-cn', ...props }) => {
     </IntlProvider>
   );
 };
-
 export default FlowChartIntl;
+export { localeLoader };
