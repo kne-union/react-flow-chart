@@ -1,14 +1,16 @@
 import React from 'react';
 import style from './style.module.scss';
 import { useContext } from './context';
-import { defaultNodeTypeList } from './constant';
+import { getDefaultNodeTypeList } from './constant';
+import { useIntl } from 'react-intl';
 
 const NodeTypeContent = props => {
   const { onClick } = Object.assign({}, {}, props);
   const { nodeTypeList } = useContext();
+  const { formatMessage } = useIntl();
   return (
     <div className={style['node-type-content']}>
-      {(nodeTypeList || defaultNodeTypeList).map((group, groupIndex) => {
+      {(nodeTypeList || getDefaultNodeTypeList({ formatMessage })).map((group, groupIndex) => {
         return (
           <div className={style['node-type-group']} key={groupIndex}>
             <div className={style['node-type-group-name']}>{group.name}</div>

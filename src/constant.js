@@ -1,29 +1,31 @@
-export const defaultNodeList = [
-  { id: 'startEvent', type: 'start', title: '开始' },
+export const getDefaultNodeList = ({ formatMessage }) => [
+  { id: 'startEvent', type: 'start', title: formatMessage('start') },
   {
     id: 'endEvent',
     type: 'end',
-    title: '结束'
+    title: formatMessage('end')
   }
 ];
 
-export const defaultNodeTypeList = [
-  {
-    name: '普通节点',
-    list: [
-      {
-        type: 'normal',
-        name: '普通节点'
-      }
-    ]
-  },
-  {
-    name: '分支节点',
-    list: [
-      {
-        type: 'condition',
-        name: '条件分支'
-      }
-    ]
-  }
-];
+export const getDefaultNodeTypeList = ({ formatMessage }) => {
+  return [
+    {
+      name: formatMessage({ id: 'normalNode' }),
+      list: [
+        {
+          type: 'normal',
+          name: formatMessage({ id: 'normalNode' })
+        }
+      ]
+    },
+    {
+      name: formatMessage({ id: 'branchNode' }),
+      list: [
+        {
+          type: 'condition',
+          name: formatMessage({ id: 'conditionBranch' })
+        }
+      ]
+    }
+  ];
+};

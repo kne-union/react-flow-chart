@@ -1,7 +1,7 @@
 import style from './style.module.scss';
 import React, { useState, useEffect, useRef } from 'react';
 import useEvent from '@kne/use-event';
-import { defaultNodeList } from './constant';
+import { getDefaultNodeList } from './constant';
 import classnames from 'classnames';
 import { Provider } from './context';
 import ActionBar from './ActionBar';
@@ -9,6 +9,9 @@ import Node from './Node';
 import { appendNode, removeNode, replaceNode } from './treeUtil';
 import { v4 as uuidv4 } from 'uuid';
 import useControlValue from '@kne/use-control-value';
+import { IntlProvider, useIntl } from 'react-intl';
+import './locale/zh-cn';
+import { message } from './locale/loader';
 
 const FlowChart = ({ className, ...props }) => {
   const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, nodeTemplate, ...otherProps } = Object.assign(
@@ -22,8 +25,9 @@ const FlowChart = ({ className, ...props }) => {
     },
     props
   );
+  const { formatMessage } = useIntl();
   const [nodeListState, setNodeList] = useControlValue(otherProps);
-  const nodeList = Array.isArray(nodeListState) && nodeListState.length > 0 ? nodeListState : defaultNodeList;
+  const nodeList = Array.isArray(nodeListState) && nodeListState.length > 0 ? nodeListState : getDefaultNodeList({ formatMessage });
   const [scale, setScale] = useState(100);
   const mousePosition = useRef({});
   const containerRef = useRef(null);
@@ -69,7 +73,7 @@ const FlowChart = ({ className, ...props }) => {
             node: Object.assign(
               {},
               {
-                title: '条件分支'
+                title: formatMessage({ id: 'conditionBranch' })
               },
               nodeTemplateRef.current?.['condition'],
               {
@@ -80,8 +84,8 @@ const FlowChart = ({ className, ...props }) => {
                     Object.assign(
                       {},
                       {
-                        title: '条件',
-                        content: '条件内容'
+                        title: formatMessage({ id: 'condition' }),
+                        content: formatMessage({ id: 'conditionContent' })
                       },
                       nodeTemplateRef.current?.['branch'],
                       {
@@ -94,8 +98,8 @@ const FlowChart = ({ className, ...props }) => {
                     Object.assign(
                       {},
                       {
-                        title: '条件',
-                        content: '条件内容'
+                        title: formatMessage({ id: 'condition' }),
+                        content: formatMessage({ id: 'conditionContent' })
                       },
                       nodeTemplateRef.current?.['branch'],
                       {
@@ -117,8 +121,8 @@ const FlowChart = ({ className, ...props }) => {
             node: Object.assign(
               {},
               {
-                title: '普通节点',
-                content: '节点内容'
+                title: formatMessage({ id: 'normalNode' }),
+                content: formatMessage({ id: 'nodeContent' })
               },
               nodeTemplateRef.current?.['normal'],
               {
@@ -138,12 +142,18 @@ const FlowChart = ({ className, ...props }) => {
         appendNode(nodeListRef.current, {
           currentNodeId: nodeData.id,
           type: 'condition',
-          node: {
-            id: uuidv4(),
-            type: 'branch',
-            title: '条件',
-            content: '条件内容'
-          }
+          node: Object.assign(
+            {},
+            {
+              title: formatMessage({ id: 'condition' }),
+              content: formatMessage({ id: 'conditionContent' })
+            },
+            nodeTemplateRef.current?.['branch'],
+            {
+              id: uuidv4(),
+              type: 'branch'
+            }
+          )
         })
       );
     });
@@ -173,7 +183,7 @@ const FlowChart = ({ className, ...props }) => {
       window.removeEventListener('mousemove', mouseMoveHandler, false);
       window.removeEventListener('mouseup', mouseUpHandler, false);
     };
-  }, [emitter, enableDrag, setNodeList]);
+  }, [emitter, enableDrag, setNodeList, formatMessage]);
 
   return (
     <Provider
@@ -215,4 +225,12 @@ const FlowChart = ({ className, ...props }) => {
   );
 };
 
-export default FlowChart;
+const FlowChartIntl = ({ locale = 'zh-cn', ...props }) => {
+  return (
+    <IntlProvider messages={message[locale]} locale={locale}>
+      <FlowChart {...props} />
+    </IntlProvider>
+  );
+};
+
+export default FlowChartIntl;
