@@ -45,7 +45,7 @@ const ConditionNode = props => {
                           emitter.emit('add-condition-branch-click', { nodeData });
                         }}
                       >
-                        添加条件
+                        {formatMessage({ id: 'addConditions' })}
                       </div>
                     )}
                   </div>
