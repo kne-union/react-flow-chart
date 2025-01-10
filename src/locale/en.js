@@ -6,7 +6,8 @@ const locale = {
   conditionBranch: 'Condition Branch',
   condition: 'Condition',
   conditionContent: 'Condition Content',
-  nodeContent: 'Node Content'
+  nodeContent: 'Node Content',
+  addConditions: 'Add Conditions'
 };
 
 export default locale;

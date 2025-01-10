@@ -6,10 +6,11 @@ import AddNode from './AddNode';
 import ArrowLine from './ArrowLine';
 import Node from './Node';
 import NodeContent from './NodeContent';
+import { useIntl } from 'react-intl';
 
 const ConditionNode = props => {
   const { nodeData, isMouseEnter } = Object.assign({}, { nodeList: null, data: null, isMouseEnter: false }, props);
-
+  const { formatMessage } = useIntl();
   const { vertical, readonly, emitter } = useContext();
 
   return (
@@ -25,7 +26,7 @@ const ConditionNode = props => {
             emitter.emit('add-condition-branch-click', { nodeData });
           }}
         >
-          添加条件
+          {formatMessage({ id: 'addConditions' })}
         </div>
       )}
       {nodeData.content && (

@@ -1,9 +1,9 @@
 export const getDefaultNodeList = ({ formatMessage }) => [
-  { id: 'startEvent', type: 'start', title: formatMessage('start') },
+  { id: 'startEvent', type: 'start', title: formatMessage({ id: 'start' }) },
   {
     id: 'endEvent',
     type: 'end',
-    title: formatMessage('end')
+    title: formatMessage({ id: 'end' })
   }
 ];
 
