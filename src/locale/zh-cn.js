@@ -6,7 +6,8 @@ const locale = {
   conditionBranch: '条件分支',
   condition: '条件',
   conditionContent: '条件内容',
-  nodeContent: '节点内容'
+  nodeContent: '节点内容',
+  addConditions: '添加条件'
 };
 
 export default locale;
