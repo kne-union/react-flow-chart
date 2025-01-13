@@ -14,6 +14,7 @@
   height: 100%;
   overflow: hidden;
   user-select: none;
+  --node-width: 200px;
 
   &.show-scrollbar {
     overflow: auto;
@@ -439,7 +440,7 @@
 }
 
 .normal-node-content {
-  width: 200px;
+  width: var(--node-width);
   min-height: 70px;
   padding: 5px 10px 8px;
   border: 2px solid transparent;
