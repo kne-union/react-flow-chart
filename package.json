@@ -1,6 +1,6 @@
 {
   "name": "@kne/react-flow-chart",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "用于展示或编辑一个审批流.",
   "syntax": {
     "esmodules": true
@@ -89,7 +89,7 @@
     "@kne/use-control-value": "^0.1.8",
     "@kne/use-event": "^0.1.5",
     "classnames": "^2.5.1",
-    "react-intl": "^7.1.0",
+    "react-intl": "^6.8.9",
     "uuid": "^10.0.0"
   }
 }
