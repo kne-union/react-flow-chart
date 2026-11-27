@@ -12,10 +12,11 @@ const ConditionNode = props => {
   const { nodeData, isMouseEnter } = Object.assign({}, { nodeList: null, data: null, isMouseEnter: false }, props);
   const { formatMessage } = useIntl();
   const { vertical, readonly, emitter } = useContext();
+  const addBranchText = formatMessage({ id: nodeData.type === 'parallel' ? 'addBranch' : 'addConditions' });
 
   return (
     <div
-      className={classnames(style['condition-node-container'], {
+      className={classnames(style['condition-node-container'], `flow-chart-${nodeData.type}-node`, {
         [style['vertical']]: vertical
       })}
     >
@@ -26,7 +27,7 @@ const ConditionNode = props => {
             emitter.emit('add-condition-branch-click', { nodeData });
           }}
         >
-          {formatMessage({ id: 'addConditions' })}
+          {addBranchText}
         </div>
       )}
       {nodeData.content && (
@@ -45,7 +46,7 @@ const ConditionNode = props => {
                           emitter.emit('add-condition-branch-click', { nodeData });
                         }}
                       >
-                        {formatMessage({ id: 'addConditions' })}
+                        {addBranchText}
                       </div>
                     )}
                   </div>

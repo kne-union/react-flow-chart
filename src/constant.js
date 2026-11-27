@@ -24,6 +24,10 @@ export const getDefaultNodeTypeList = ({ formatMessage }) => {
         {
           type: 'condition',
           name: formatMessage({ id: 'conditionBranch' })
+        },
+        {
+          type: 'parallel',
+          name: formatMessage({ id: 'parallelBranch' })
         }
       ]
     }

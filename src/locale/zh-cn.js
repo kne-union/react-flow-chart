@@ -7,7 +7,14 @@ const locale = {
   condition: '条件',
   conditionContent: '条件内容',
   nodeContent: '节点内容',
-  addConditions: '添加条件'
+  addConditions: '添加条件',
+  parallelBranch: '并行分支',
+  branch: '分支',
+  branchContent: '分支内容',
+  addBranch: '添加分支',
+  zoomIn: '放大',
+  zoomOut: '缩小',
+  resetScale: '还原到 100%'
 };
 
 export default locale;
