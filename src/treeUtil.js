@@ -1,3 +1,7 @@
+export const BRANCH_CONTAINER_TYPES = ['condition', 'parallel'];
+
+export const isBranchContainer = type => BRANCH_CONTAINER_TYPES.indexOf(type) > -1;
+
 export const findNode = (tree, { currentNodeId }) => {
   const core = tree => {
     if (Array.isArray(tree)) {
@@ -23,7 +27,7 @@ export const appendNode = (tree, { currentNodeId, node, type }) => {
       const currentIndex = tree.findIndex(node => node.id === currentNodeId);
       if (currentIndex > -1) {
         const newTree = tree.slice(0);
-        if (newTree[currentIndex].type === 'condition' && type === 'condition') {
+        if (isBranchContainer(newTree[currentIndex].type) && (type === 'branch' || type === newTree[currentIndex].type)) {
           const newNode = Object.assign({}, newTree[currentIndex]);
           const newChildren = (newNode.children || []).slice(0);
           newChildren.push([node]);
@@ -59,7 +63,7 @@ export const removeNode = (tree, { currentNodeId }) => {
         return tree
           .map(node => core(node))
           .filter(node => {
-            return !(node.type === 'condition' && node.children.length < 2);
+            return !(isBranchContainer(node.type) && node.children.length < 2);
           });
       }
     }
@@ -80,11 +84,11 @@ export const replaceNode = (tree, { node }) => {
       return Object.assign({}, node, { type: tree.type });
     }
 
-    return tree.children ? Object.assign(tree, { children: core(tree.children) }) : tree;
+    return tree.children ? Object.assign({}, tree, { children: core(tree.children) }) : tree;
   };
   return core(tree);
 };
 
-const treeUtil = { findNode, appendNode, removeNode, replaceNode };
+const treeUtil = { findNode, appendNode, removeNode, replaceNode, isBranchContainer };
 
 export default treeUtil;

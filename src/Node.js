@@ -4,6 +4,7 @@ import StartNode from './StartNode';
 import EndNode from './EndNode';
 import ConditionNode from './ConditionNode';
 import NormalNode from './NormalNode';
+import classnames from 'classnames';
 
 const Node = props => {
   const { nodeData, belongConditionNodeData, isMouseEnter } = Object.assign({}, {}, props);
@@ -16,7 +17,7 @@ const Node = props => {
     if (nodeData.type === 'end') {
       return <EndNode nodeData={nodeData} />;
     }
-    if (nodeData.type === 'condition') {
+    if (nodeData.type === 'condition' || nodeData.type === 'parallel') {
       return <ConditionNode nodeData={nodeData} isMouseEnter={isMouseEnter || isCurrentMouseEnter} />;
     }
 
@@ -24,7 +25,7 @@ const Node = props => {
   };
   return (
     <div
-      className={style['node-container']}
+      className={classnames(style['node-container'], `flow-chart-node-${nodeData.type}`)}
       onMouseEnter={() => {
         setIsCurrentMouseEnter(true);
       }}

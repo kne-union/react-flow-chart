@@ -43,6 +43,16 @@ const BaseExample = () => {
                 'id': '133d8b89-b79a-4daf-ad46-4c2915fec339', 'type': 'branch', 'title': '条件', 'content': '条件内容'
             }], [{'id': '46ee06d5-bbf1-4c4a-8389-71e412d9af51', 'type': 'branch', 'title': '条件', 'content': '条件内容'}]]
         }, {
+            'id': 'parallel-1', 'type': 'parallel', 'title': '并行分支', 'content': '全部分支完成后继续', 'children': [[{
+                'id': 'parallel-1-branch-1', 'type': 'branch', 'title': '分支', 'content': '财务'
+            }, {
+                'id': 'parallel-1-node-1', 'type': 'normal', 'title': '财务审批', 'content': '财务经理'
+            }], [{
+                'id': 'parallel-1-branch-2', 'type': 'branch', 'title': '分支', 'content': '法务'
+            }, {
+                'id': 'parallel-1-node-2', 'type': 'normal', 'title': '法务审批', 'content': '法务专员'
+            }]]
+        }, {
             'id': 'c6fb9b16-5124-4bdd-b1c6-a899f257d4b4', 'type': 'normal', 'title': '普通节点', 'content': '节点内容'
         }, {'id': 'endEvent', 'type': 'end', 'title': '结束'}]} onChange={(nodeList) => {
             console.log(JSON.stringify(nodeList));

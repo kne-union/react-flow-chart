@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { Provider } from './context';
 import ActionBar from './ActionBar';
 import Node from './Node';
-import { appendNode, removeNode, replaceNode } from './treeUtil';
+import { appendNode, removeNode, replaceNode, isBranchContainer } from './treeUtil';
 import { v4 as uuidv4 } from 'uuid';
 import useControlValue from '@kne/use-control-value';
 import { IntlProvider, useIntl } from 'react-intl';
@@ -17,7 +17,7 @@ import { message } from './loader';
 localeLoader('zh-cn', zhCn);
 
 const FlowChart = ({ className, ...props }) => {
-  const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, nodeTemplate, ...otherProps } = Object.assign(
+  const { readonly, showScrollBar, enableDrag, initFit, vertical, onEditNode, nodeTemplate, nodeTypeList, renderNodeContent, renderNodeTitle, getNodeClassName, ...otherProps } = Object.assign(
     {},
     {
       showScrollBar: true,
@@ -68,74 +68,32 @@ const FlowChart = ({ className, ...props }) => {
   }, [initFit]);
 
   useEffect(() => {
+    const getTemplate = (type, parentType) => {
+      const template = nodeTemplateRef.current?.[type];
+      return typeof template === 'function' ? template({ type, parentType }) : template;
+    };
+    const createBranch = parentType => {
+      const defaultBranch =
+        parentType === 'parallel' ? { title: formatMessage({ id: 'branch' }), content: formatMessage({ id: 'branchContent' }) } : { title: formatMessage({ id: 'condition' }), content: formatMessage({ id: 'conditionContent' }) };
+      return Object.assign({}, defaultBranch, getTemplate('branch', parentType), {
+        id: uuidv4(),
+        type: 'branch'
+      });
+    };
+    const defaultTitles = {
+      condition: { title: formatMessage({ id: 'conditionBranch' }) },
+      parallel: { title: formatMessage({ id: 'parallelBranch' }) },
+      normal: { title: formatMessage({ id: 'normalNode' }), content: formatMessage({ id: 'nodeContent' }) }
+    };
     emitter.addListener('add-node-type-click', ({ type, nodeData }) => {
-      if (type === 'condition') {
-        return setNodeList(
-          appendNode(nodeListRef.current, {
-            currentNodeId: nodeData.id,
-            node: Object.assign(
-              {},
-              {
-                title: formatMessage({ id: 'conditionBranch' })
-              },
-              nodeTemplateRef.current?.['condition'],
-              {
-                id: uuidv4(),
-                type: 'condition',
-                children: [
-                  [
-                    Object.assign(
-                      {},
-                      {
-                        title: formatMessage({ id: 'condition' }),
-                        content: formatMessage({ id: 'conditionContent' })
-                      },
-                      nodeTemplateRef.current?.['branch'],
-                      {
-                        id: uuidv4(),
-                        type: 'branch'
-                      }
-                    )
-                  ],
-                  [
-                    Object.assign(
-                      {},
-                      {
-                        title: formatMessage({ id: 'condition' }),
-                        content: formatMessage({ id: 'conditionContent' })
-                      },
-                      nodeTemplateRef.current?.['branch'],
-                      {
-                        id: uuidv4(),
-                        type: 'branch'
-                      }
-                    )
-                  ]
-                ]
-              }
-            )
-          })
-        );
+      const node = Object.assign({}, defaultTitles[type], getTemplate(type), {
+        id: uuidv4(),
+        type
+      });
+      if (isBranchContainer(type)) {
+        node.children = [[createBranch(type)], [createBranch(type)]];
       }
-      if (type === 'normal') {
-        return setNodeList(
-          appendNode(nodeListRef.current, {
-            currentNodeId: nodeData.id,
-            node: Object.assign(
-              {},
-              {
-                title: formatMessage({ id: 'normalNode' }),
-                content: formatMessage({ id: 'nodeContent' })
-              },
-              nodeTemplateRef.current?.['normal'],
-              {
-                id: uuidv4(),
-                type: 'normal'
-              }
-            )
-          })
-        );
-      }
+      setNodeList(appendNode(nodeListRef.current, { currentNodeId: nodeData.id, node }));
     });
     emitter.addListener('delete-node-click', ({ nodeData }) => {
       setNodeList(removeNode(nodeListRef.current, { currentNodeId: nodeData.id }));
@@ -144,19 +102,8 @@ const FlowChart = ({ className, ...props }) => {
       setNodeList(
         appendNode(nodeListRef.current, {
           currentNodeId: nodeData.id,
-          type: 'condition',
-          node: Object.assign(
-            {},
-            {
-              title: formatMessage({ id: 'condition' }),
-              content: formatMessage({ id: 'conditionContent' })
-            },
-            nodeTemplateRef.current?.['branch'],
-            {
-              id: uuidv4(),
-              type: 'branch'
-            }
-          )
+          type: 'branch',
+          node: createBranch(nodeData.type)
         })
       );
     });
@@ -194,34 +141,40 @@ const FlowChart = ({ className, ...props }) => {
         readonly,
         vertical,
         nodeList,
+        nodeTypeList,
+        renderNodeContent,
+        renderNodeTitle,
+        getNodeClassName,
         emitter
       }}
     >
-      <div
-        ref={containerRef}
-        className={classnames(className, 'flow-chart-container', style['container'], {
-          [style['show-scrollbar']]: showScrollBar
-        })}
-        onMouseDown={e => {
-          mousePosition.current.isMousedown = true;
-          mousePosition.current.x = e.clientX;
-          mousePosition.current.y = e.clientY;
-          mousePosition.current.scrollLeft = containerRef.current.scrollLeft;
-          mousePosition.current.scrollTop = containerRef.current.scrollTop;
-        }}
-      >
+      <div className={classnames('flow-chart-wrapper', style['wrapper'])}>
         <ActionBar scale={scale} onChange={setScale} />
         <div
-          ref={contentRef}
-          className={classnames('flow-chart-content', style['content'], {
-            [style['vertical']]: vertical,
-            [style['is-scale']]: scale <= 100
+          ref={containerRef}
+          className={classnames(className, 'flow-chart-container', style['container'], {
+            [style['show-scrollbar']]: showScrollBar
           })}
-          style={{ transform: `scale(${scale / 100})` }}
+          onMouseDown={e => {
+            mousePosition.current.isMousedown = true;
+            mousePosition.current.x = e.clientX;
+            mousePosition.current.y = e.clientY;
+            mousePosition.current.scrollLeft = containerRef.current.scrollLeft;
+            mousePosition.current.scrollTop = containerRef.current.scrollTop;
+          }}
         >
-          {nodeList.map(node => {
-            return <Node key={node.id} nodeList={nodeList} nodeData={node} />;
-          })}
+          <div
+            ref={contentRef}
+            className={classnames('flow-chart-content', style['content'], {
+              [style['vertical']]: vertical,
+              [style['is-scale']]: scale <= 100
+            })}
+            style={{ transform: `scale(${scale / 100})` }}
+          >
+            {nodeList.map(node => {
+              return <Node key={node.id} nodeList={nodeList} nodeData={node} />;
+            })}
+          </div>
         </div>
       </div>
     </Provider>
@@ -237,3 +190,4 @@ const FlowChartIntl = ({ locale = 'zh-cn', ...props }) => {
 };
 export default FlowChartIntl;
 export { localeLoader };
+export { default as treeUtil } from './treeUtil';
